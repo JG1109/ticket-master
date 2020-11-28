@@ -6,11 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # GCP SQL
-PASSWORD = "wgzzsql"
-PUBLIC_IP_ADDRESS = "104.197.213.149"
-DBNAME = "wgzzdb"
-PROJECT_ID = "bamboo-creek-290702"
-INSTANCE_NAME = "wgzzsql"
+PASSWORD = "password"
+PUBLIC_IP_ADDRESS = "xxx.xxx.xxx.xxx"
+DBNAME = "data base name"
+PROJECT_ID = "project id"
+INSTANCE_NAME = "instance name"
 
 # configuration
 app.config["SECRET_KEY"] = "Ticket Master!"
