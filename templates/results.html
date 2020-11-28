@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+#t01 {
+  width: 100%;
+  background-color: #f1f1c1;
+}
+</style>
+</head>
+<body>
+
+<title>Search Results</title>
+  
+<table id="t01">
+  <tr>
+    <th>Show Name</th>
+    <th>Type</th>
+    <th>Length</th>
+    <th>Age Group</th>
+    <th>Director</th>
+  </tr>
+  {% for row_index in range(results|count) %}
+  <tr>
+    <td>{{ results[row_index][0] }}</td>
+    <td>{{ results[row_index][1] }}</td>
+    <td>{{ results[row_index][2] }}</td>
+    <td>{{ results[row_index][3] }}</td>
+    <td>{{ results[row_index][4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>
