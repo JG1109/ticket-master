@@ -4,6 +4,8 @@
 {% from "_formhelpers.html" import render_field %}
 <form method="post">
     <dl>
+        {{ render_field(form.name) }}
+        {{ render_field(form.ssn) }}
         {{ render_field(form.show) }}
         {{ render_field(form.rate_choice) }}
     </dl>
