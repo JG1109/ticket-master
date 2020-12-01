@@ -40,12 +40,13 @@ th, td {
   {% endfor %}
 </table>
 </div>
-
-<div>
-<form>
- <input type="button" value="Go back" onclick="history.back()">
-</form>
-<div>
+  
+<button onclick="goBack()">Home Page</button>
+<script>
+function goBack() {
+  window.history.go(-2);
+}
+</script>
   
 </body>
 </html>
