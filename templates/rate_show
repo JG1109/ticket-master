@@ -1,0 +1,12 @@
+<doctype html="">
+<title>Ticket Master - Rating Page</title>
+<h2>Rate a show you've watched</h2>
+{% from "_formhelpers.html" import render_field %}
+<form method="post">
+    <dl>
+        {{ render_field(form.show) }}
+        {{ render_field(form.rate_choice) }}
+    </dl>
+    <p><input type="submit" value="Submit">
+</p></form>
+</doctype>
