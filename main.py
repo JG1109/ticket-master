@@ -27,15 +27,23 @@ def search_results(search):
     results = None
     search_string = search.data['search']
     select_string = dict(ShowSearchForm.choices).get(search.select.data)
+    # print("_____________")
+    # print(select_string)
+    # results = list()
 
     if search.data['search'] is not None:
         cnx = mysql.connector.connect(user='root', password='wgzzsql',
                                      host='104.197.213.149',
                                      database='wgzzdb')
         cursor = cnx.cursor()
-        query = "SELECT * FROM Shows NATURAL JOIN Location WHERE " + select_string + " = " + "'" + search_string + "';"
+        query = "select * from (select * from Shows natural join Location Where " \
+                + select_string + " = " + "'" + search_string + "') as a1 natural join (select ShowName, avg(Rating) from Rating Where " \
+                + select_string + " = " + "'" + search_string + "') as a2;"
+        # query = "SELECT * FROM Shows NATURAL JOIN Location WHERE " + select_string + " = " + "'" + search_string + "';"
         cursor.execute(query)
         results = cursor.fetchall()
+        
+
 
         cursor.close()
         cnx.close()
