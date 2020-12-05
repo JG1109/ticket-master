@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+#t01 {
+  width: 100%;
+  background-color: #f1f1c1;
+}
+</style>
+</head>
+<body>
+
+<title>Purchase History</title>
+  
+<h2 style="text-align:left;color:blue;">
+  Purchase History
+</h2>
+  
+<div>
+<table id="t01">
+  <tr>
+    <th>Your SSN</th>
+    <th>Number of Shows</th>
+    <th>Total Invests</th>
+  </tr>
+  {% for row_index in range(results|count) %}
+  <tr>
+    <td>{{ results[row_index][0] }}</td>
+    <td>{{ results[row_index][1] }}</td>
+    <td>{{ results[row_index][2] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+  
+<button onclick="goBack()">Home Page</button>
+<script>
+function goBack() {
+  window.history.go(-2);
+}
+</script>
+  
+</body>
+</html>
