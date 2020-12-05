@@ -1,0 +1,16 @@
+1.
+Using prepared statements and ORM (using stored procedures is optional).
+For more details, see CS 348 Project Stage 3 requirement 2.b
+
+2.
+State transactions and the choice of isolation levels and why.
+
+3.
+Discuss the lessons learned during the project phases. What would you change if you could start over.
+
+4.
+Any slides used in the demo video.
+
+Note:
+Part 2 and 3 need to be included in the demo video.
+The whole second part of CS 348 Project Stage 3 requirement need to be in the demo video.
