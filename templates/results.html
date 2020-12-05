@@ -35,6 +35,7 @@ th, td {
     <th>Venue</th>
     <th>City</th>
     <th>Capacity</th>
+    <th>CurrentRating</th>
   </tr>
   {% for row_index in range(results|count) %}
   <tr>
@@ -46,6 +47,7 @@ th, td {
     <td>{{ results[row_index][5] }}</td>
     <td>{{ results[row_index][6] }}</td>
     <td>{{ results[row_index][7] }}</td>
+    <td>{{ results[row_index][8] }}</td>
   </tr>
   {% endfor %}
 </table>
