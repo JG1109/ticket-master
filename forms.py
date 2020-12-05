@@ -30,3 +30,7 @@ class RatingForm(Form):
 
 class ShopForm(Form):
     show = StringField('Show Name')
+
+class HistoryForm(Form):
+    name = StringField('Name')
+    ssn = StringField('Social Security Number')
