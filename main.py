@@ -1,6 +1,6 @@
 # imports
 from app import app
-from forms import ShowSearchForm, BuyerForm, RatingForm, ShopForm
+from forms import ShowSearchForm, BuyerForm, RatingForm, ShopForm, HistoryForm
 from flask import flash, render_template, request, redirect
 from datetime import datetime
 import mysql.connector
@@ -64,11 +64,16 @@ def new_buyer():
             flash('Show name or Venue not found!')
             return redirect('/')
 
-        # Add new buyer
-        query = "INSERT INTO Buyers (BuyerSSN, BuyerName, BuyerAge, PhoneNumber, Email) VALUES (%s, %s, %s, %s, %s)"
-        val = (form.data['ssn'], form.data['name'], form.data['age'], form.data['number'], form.data['email'])
-        cursor.execute(query, val)
-        cnx.commit()
+        # check if the buyer exists
+        checker = "SELECT * FROM Buyers WHERE BuyerSSN = " + str(int(form.data['ssn'])) + ";"
+        cursor.execute(checker)
+        results = cursor.fetchall()
+        if not results:
+            # Add new buyer
+            query = "INSERT INTO Buyers (BuyerSSN, BuyerName, BuyerAge, PhoneNumber, Email) VALUES (%s, %s, %s, %s, %s)"
+            val = (form.data['ssn'], form.data['name'], form.data['age'], form.data['number'], form.data['email'])
+            cursor.execute(query, val)
+            cnx.commit()
 
         # Generate serial number and seat number
         SerialNumber = 111
@@ -95,6 +100,13 @@ def new_buyer():
             price_int = 90
         query = "INSERT INTO Ticket (SerialNumber, ShowName, Seat, Price, Venue) VALUES (%s, %s, %s, %s, %s)"
         val = (SerialNumber, form.data['show'], seat, price_int, form.data['venue'])
+        cursor.execute(query, val)
+        cnx.commit()
+
+        # Add a new booking instance
+        date = datetime.today()
+        query = "INSERT INTO Book (BuyerSSN, SerialNumber, BookingDate) VALUES (%s, %s, %s)"
+        val = (form.data['ssn'], SerialNumber, date)
         cursor.execute(query, val)
         cnx.commit()
 
@@ -176,6 +188,26 @@ def shop():
         return render_template('shop_results.html', results=results)
 
     return render_template('shop.html', form=form)
+
+
+@app.route('/history', methods=['GET', 'POST'])
+def history():
+    form = HistoryForm(request.form)
+    if request.method == 'POST' and form.validate():
+        cnx = mysql.connector.connect(user='root', password='wgzzsql',
+                                      host='104.197.213.149',
+                                      database='wgzzdb')
+        cursor = cnx.cursor()
+        query = "SELECT BuyerSSN, COUNT(ShowName) AS Shows, SUM(Price) AS TotalCost FROM Buyers NATURAL JOIN Book NATURAL JOIN Ticket GROUP BY BuyerSSN"
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        cursor.close()
+        cnx.close()
+
+        return render_template('history_results.html', results=results)
+
+    return render_template('history.html', form=form)
 
 
 if __name__ == '__main__':
