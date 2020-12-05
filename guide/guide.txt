@@ -1,0 +1,17 @@
+To demo Ticket Master:
+
+To start the application:
+1. Load all files and folder templates to local directory.
+2. Start Google Cloud Platform SQL 'wgzzsql'.
+3. Run main.py and follow the address given.
+
+To use the application:
+1. Enter text into search box to search for shows.
+2. Follow any buttons and links to redirect.
+3. The input needs to be exactly the same the data stored. (Like ShowName, Venue, etc.)
+4. There will be different types of error messages according to different input errors.
+
+To inspect the files:
+1. app.py supports the connection between the application and the database.
+2. forms.py delivers inputs from the application.
+3. main.py deals with requests from forms.py and interacts with the database.
