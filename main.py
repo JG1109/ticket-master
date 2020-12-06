@@ -33,17 +33,20 @@ def search_results(search):
 
     if search.data['search'] is not None:
         cnx = mysql.connector.connect(user='root', password='wgzzsql',
-                                     host='104.197.213.149',
-                                     database='wgzzdb')
+                                      host='104.197.213.149',
+                                      database='wgzzdb')
         cursor = cnx.cursor()
-        query = "select * from (select * from Shows natural join Location Where " \
-                + select_string + " = " + "'" + search_string + "') as a1 natural join (select ShowName, avg(Rating) from Rating Where " \
-                + select_string + " = " + "'" + search_string + "') as a2;"
+
+        getter = "SELECT ShowName FROM Shows WHERE " + select_string + " = " + "'" + search_string + "';"
+        cursor.execute(getter)
+        replacement = cursor.fetchall()
+
+        query = "SELECT * FROM (SELECT * FROM Shows NATURAL JOIN Location WHERE " \
+                + select_string + " = " + "'" + search_string + "') AS a1 NATURAL JOIN (SELECT ShowName, AVG(Rating) FROM Rating WHERE " \
+                + "ShowName" + " = " + "'" + replacement[0][0] + "') AS a2;"
         # query = "SELECT * FROM Shows NATURAL JOIN Location WHERE " + select_string + " = " + "'" + search_string + "';"
         cursor.execute(query)
         results = cursor.fetchall()
-        
-
 
         cursor.close()
         cnx.close()
@@ -65,7 +68,8 @@ def new_buyer():
                                       database='wgzzdb')
         cursor = cnx.cursor()
         # check if the show name and venue exist
-        checker = "SELECT * FROM Location WHERE ShowName = " + "'" + form.data['show'] + "'" + " AND Venue = " + "'" + form.data['venue'] + "';"
+        checker = "SELECT * FROM Location WHERE ShowName = " + "'" + form.data['show'] + "'" + " AND Venue = " + "'" + \
+                  form.data['venue'] + "';"
         cursor.execute(checker)
         results = cursor.fetchall()
         if not results:
@@ -86,15 +90,17 @@ def new_buyer():
         # Generate serial number and seat number
         SerialNumber = 111
         seat = 1
-        checker = "SELECT SerialNumber, Seat FROM Ticket WHERE  SerialNumber = " + str(SerialNumber) + " AND Seat = " + "'" + str(seat) + "';"
+        checker = "SELECT SerialNumber, Seat FROM Ticket WHERE  SerialNumber = " + str(
+            SerialNumber) + " AND Seat = " + "'" + str(seat) + "';"
         cursor.execute(checker)
         results = cursor.fetchall()
         while results:
-           SerialNumber += 1
-           seat += 1
-           checker = "SELECT SerialNumber, Seat FROM Ticket WHERE SerialNumber = " + str(SerialNumber) + " AND Seat = " + "'" + str(seat) + "';"
-           cursor.execute(checker)
-           results = cursor.fetchall()
+            SerialNumber += 1
+            seat += 1
+            checker = "SELECT SerialNumber, Seat FROM Ticket WHERE SerialNumber = " + str(
+                SerialNumber) + " AND Seat = " + "'" + str(seat) + "';"
+            cursor.execute(checker)
+            results = cursor.fetchall()
 
         # Add new ticket
         price = dict(BuyerForm.price).get(form.price_choice.data)
@@ -144,7 +150,8 @@ def rate_show():
             return redirect('/')
 
         # Check if the rater's name and SSN match
-        checker = "SELECT BuyerSSN, BuyerName FROM Buyers WHERE BuyerSSN = " + str(form.data['ssn']) + " AND BuyerName = " + "'" + form.data['name'] + "';"
+        checker = "SELECT BuyerSSN, BuyerName FROM Buyers WHERE BuyerSSN = " + str(
+            form.data['ssn']) + " AND BuyerName = " + "'" + form.data['name'] + "';"
         cursor.execute(checker)
         results = cursor.fetchall()
         if not results:
