@@ -41,7 +41,19 @@ def search_results(search):
         cursor.execute(getter)
         replacement = cursor.fetchall()
 
-        query = "SELECT * FROM (SELECT * FROM Shows NATURAL JOIN Location WHERE " \
+        if not replacement:
+            flash('No results found!')
+            return redirect('/')
+
+        # check if there are ratings for the show
+        checker = "SELECT Rating FROM Rating WHERE ShowName" + " = " + "'" + replacement[0][0] + "';"
+        cursor.execute(checker)
+        results = cursor.fetchall()
+        if not results:
+            query = "SELECT * FROM (SELECT * FROM Shows NATURAL JOIN Location WHERE " \
+                + select_string + " = " + "'" + search_string + "') AS a1;"
+        else:
+            query = "SELECT * FROM (SELECT * FROM Shows NATURAL JOIN Location WHERE " \
                 + select_string + " = " + "'" + search_string + "') AS a1 NATURAL JOIN (SELECT ShowName, AVG(Rating) FROM Rating WHERE " \
                 + "ShowName" + " = " + "'" + replacement[0][0] + "') AS a2;"
         # query = "SELECT * FROM Shows NATURAL JOIN Location WHERE " + select_string + " = " + "'" + search_string + "';"
