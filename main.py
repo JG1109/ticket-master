@@ -3,7 +3,34 @@ from app import app
 from forms import ShowSearchForm, BuyerForm, RatingForm, ShopForm, HistoryForm
 from flask import flash, render_template, request, redirect
 from datetime import datetime
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 import mysql.connector
+import sqlalchemy
+
+
+s = "mysql+mysqlconnector://root:" + "wgzzsql" + "@104.197.213.149/wgzzdb"
+engine = sqlalchemy.create_engine(s)
+
+# define and create table
+Base = declarative_base()
+class Purchases(Base):
+    __tablename__ = 'Purchases'
+
+    BuyerName = sqlalchemy.Column(sqlalchemy.String(length=50))
+    BuyerSSN = sqlalchemy.Column(sqlalchemy.Integer(), primary_key=True)
+    ShowName = sqlalchemy.Column(sqlalchemy.String(length=50))
+
+    def __repr__(self):
+        return "<Purchases(BuyerName='{1}', BuyerSSN='{0}', ShowName='{1}')>".format(self.BuyerName, self.BuyerSSN, self.ShowName)
+
+
+Base.metadata.create_all(engine)
+
+# create a session
+Session = sqlalchemy.orm.sessionmaker()
+Session.configure(bind=engine)
+session = Session()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -138,6 +165,11 @@ def new_buyer():
 
         cursor.close()
         cnx.close()
+
+        # Add new purchase
+        newPurchase = Purchases(BuyerName=form.data['name'], BuyerSSN=form.data['ssn'], ShowName=form.data['show'])
+        session.add(newPurchase)
+        session.commit()
 
         flash('Ticket booked successfully!')
         return redirect('/')
