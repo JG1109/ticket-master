@@ -266,7 +266,7 @@ def history():
                                       host='104.197.213.149',
                                       database='wgzzdb')
         cursor = cnx.cursor()
-        query = "SELECT BuyerSSN, COUNT(ShowName) AS Shows, SUM(Price) AS TotalCost FROM Buyers NATURAL JOIN Book NATURAL JOIN Ticket GROUP BY BuyerSSN"
+        query = "SELECT BuyerSSN, COUNT(ShowName) AS Shows, SUM(Price) AS TotalCost FROM Buyers NATURAL JOIN Book NATURAL JOIN Ticket GROUP BY BuyerSSN HAVING BuyerSSN = " + form.data['ssn'] + ";"
         cursor.execute(query)
         results = cursor.fetchall()
 
