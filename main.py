@@ -5,6 +5,7 @@ from flask import flash, render_template, request, redirect
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import select, MetaData, Table
 import mysql.connector
 import sqlalchemy
 
@@ -73,9 +74,15 @@ def search_results(search):
             return redirect('/')
 
         # check if there are ratings for the show
-        checker = "SELECT Rating FROM Rating WHERE ShowName" + " = " + "'" + replacement[0][0] + "';"
-        cursor.execute(checker)
-        results = cursor.fetchall()
+        # ORM
+        metadata = MetaData(bind=None)
+        RatingTable = Table('Rating', metadata, autoload=True, autoload_with=engine)
+        checker = select([RatingTable]).where(RatingTable.columns.ShowName == replacement[0][0])
+        connection = engine.connect()
+        results = connection.execute(checker).fetchall()
+        # checker = "SELECT Rating FROM Rating WHERE ShowName" + " = " + "'" + replacement[0][0] + "';"
+        # cursor.execute(checker)
+        # results = cursor.fetchall()
         if not results:
             query = "SELECT * FROM (SELECT * FROM Shows NATURAL JOIN Location WHERE " \
                 + select_string + " = " + "'" + search_string + "') AS a1;"
@@ -167,6 +174,7 @@ def new_buyer():
         cnx.close()
 
         # Add new purchase
+        # ORM
         newPurchase = Purchases(BuyerName=form.data['name'], BuyerSSN=form.data['ssn'], ShowName=form.data['show'])
         session.add(newPurchase)
         session.commit()
@@ -224,25 +232,26 @@ def rate_show():
 def shop():
     form = ShopForm(request.form)
     if request.method == 'POST' and form.validate():
-        cnx = mysql.connector.connect(user='root', password='wgzzsql',
-                                      host='104.197.213.149',
-                                      database='wgzzdb')
-        cursor = cnx.cursor()
+        # Register metadata
+        metadata = MetaData(bind=None)
+
         # Check if the show is valid
-        checker = "SELECT ShowName FROM Shows WHERE ShowName = " + "'" + form.data['show'] + "';"
-        cursor.execute(checker)
-        results = cursor.fetchall()
+        # ORM
+        ShowsTable = Table('Shows', metadata, autoload=True, autoload_with=engine)
+        checker = select([ShowsTable]).where(ShowsTable.columns.ShowName == form.data['show'])
+        connection = engine.connect()
+        results = connection.execute(checker).fetchall()
+
         if not results:
             flash('Show not found!')
             return redirect('/')
 
         # Fetch Merchandise data
-        query = "SELECT * FROM Merchandise WHERE ShowName = " + "'" + form.data['show'] + "';"
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        cursor.close()
-        cnx.close()
+        # ORM
+        MerchandiseTable = Table('Shows', metadata, autoload=True, autoload_with=engine)
+        checker = select([MerchandiseTable]).where(MerchandiseTable.columns.ShowName == form.data['show'])
+        connection = engine.connect()
+        results = connection.execute(checker).fetchall()
 
         return render_template('shop_results.html', results=results)
 
