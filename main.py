@@ -248,7 +248,7 @@ def shop():
 
         # Fetch Merchandise data
         # ORM
-        MerchandiseTable = Table('Shows', metadata, autoload=True, autoload_with=engine)
+        MerchandiseTable = Table('Merchandise', metadata, autoload=True, autoload_with=engine)
         checker = select([MerchandiseTable]).where(MerchandiseTable.columns.ShowName == form.data['show'])
         connection = engine.connect()
         results = connection.execute(checker).fetchall()
