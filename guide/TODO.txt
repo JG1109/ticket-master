@@ -1,4 +1,4 @@
-1.
+1. (Finished)
 Using prepared statements and ORM (using stored procedures is optional).
 For more details, see CS 348 Project Stage 3 requirement 2.b
 
