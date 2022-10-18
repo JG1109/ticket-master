@@ -1,2 +1,2 @@
 # Ticket-Master
-A Ticket Buying System.
+A ticket buying web-app.
